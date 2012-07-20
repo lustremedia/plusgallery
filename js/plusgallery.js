@@ -434,7 +434,7 @@ var pg = {
 															 
 		if(displayAlbum){
 			if(pg.type == 'facebook' || pg.type == 'flickr') {
-			 var imgHTML = 	'<img src="/images/plusgallery/210.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
+			 var imgHTML = 	'<img src="./images/plusgallery/210.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
 			}
 			else {
 				var imgHTML = '<img src="' + galleryImage + '" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
