@@ -61,7 +61,7 @@ var pg = {
 	limit: 30, //Limit of photos to load for gallery / more that 60 is dumb, separate them into different albums
 	apiKey: '', //used with Flickr
 	exclude: '',
-	include: '',
+	include: '', // if you have lots of albums and you just want to pick a few use this option with the album title
 	/*don't touch*/
 	t: '', //timer
 	idx: 0,
