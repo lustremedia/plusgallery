@@ -61,7 +61,7 @@ var pg = {
 	limit: 30, //Limit of photos to load for gallery / more that 60 is dumb, separate them into different albums
 	apiKey: '', //used with Flickr
 	exclude: '',
-	
+	include: '',
 	/*don't touch*/
 	t: '', //timer
 	idx: 0,
@@ -70,8 +70,6 @@ var pg = {
 	winWidth: 1024, //resets
 	touch: false,
 	titleText: '',
-	
-	
 	
 	init: function(){
 		var _doc = $(document);
@@ -97,7 +95,7 @@ var pg = {
 		//attach loadGallery to the album links
 		_doc.on("click", ".pgalbumlink",function(e){
 			e.preventDefault();
-			$(this).append('<span class="pgloading"></span>');							 
+			$(this).append('<span class="pgloading"></span>');
 			var galleryURL = this.href;
 			var galleryTitle = $(this).children('span').html();
 			pg.loadGallery(galleryURL,galleryTitle);
@@ -157,9 +155,10 @@ var pg = {
 	----------------------------*/
 	getDataAttr: function(){
 		var pgDiv = $('#plusgallery');
-		pgDiv.attr('data-userid')
+		
 		//Gallery User Id *required
 		var dataAttr = pgDiv.attr('data-userid'); 
+		
 		if(dataAttr) {
 			pg.userId = dataAttr;
 		}
@@ -173,7 +172,7 @@ var pg = {
 			pg.type = dataAttr;
 		}
 		else {
-			alert('You must enter a data type.');	
+			alert('You must enter a data type.');
 		}
 		
 		
@@ -195,14 +194,18 @@ var pg = {
 			pg.exclude = dataAttr.split(',');
 		}
 		
+		//album id to include-only
+		dataAttr = pgDiv.attr('data-include-only');
+		if(dataAttr) {
+			pg.include = dataAttr.split(',');
+			console.log(pg.include);
+		}
+		
 		//Api key - used with Flickr
 		dataAttr = pgDiv.attr('data-api-key');
 		if(dataAttr) {
 			pg.apiKey = dataAttr;
 		}
-		
-		
-		
 		
 		dataAttr = pgDiv.attr('data-album-id');
 		if(dataAttr) {
@@ -413,8 +416,6 @@ var pg = {
 
 		});
 	},
-		
-	
 	
 	/*--------------------------
 	
@@ -429,9 +430,20 @@ var pg = {
 			if(galleryJSON.indexOf(value) > 0){
 				displayAlbum = false;
 			}
-		});												 
-															 
-															 
+		});
+		
+		// include only if pg.include is set
+		$.each(pg.include, function(index, value){ //include albums if pg.include is set
+			console.log(index);
+			console.log(value);
+			console.log(galleryTitle);
+			if(galleryTitle === value){
+				displayAlbum = true;
+			} else {
+				displayAlbum = false;
+			}
+		});
+		
 		if(displayAlbum){
 			if(pg.type == 'facebook' || pg.type == 'flickr') {
 			 var imgHTML = 	'<img src="./images/plusgallery/210.png" style="background-image: url(' + galleryImage + ');" title="' + galleryTitle + '" title="' + galleryTitle + '" class="pgalbumimg">';	
@@ -492,7 +504,7 @@ var pg = {
 		pg.imgArray = [];
 		pg.titleArray = [];
 		$('#pgzoom').empty();
-															
+
 		$.ajax({
 			url: url,
 			cache: false,
@@ -507,17 +519,15 @@ var pg = {
 				switch(pg.type)
 				{
 				case 'google':
-					var objPath = json.feed.entry;	
+					var objPath = json.feed.entry;
 					break;
 				case 'flickr':
-					var objPath = json.photoset.photo;	
+					var objPath = json.photoset.photo;
 					break;
 				case 'facebook':
-					var objPath = json.data;		
+					var objPath = json.data;
 					break;
 				}
-				
-				
 			
 				pg.imgTotal = objPath.length;
 				//limit the results
@@ -787,24 +797,3 @@ var pg = {
 		$('#pgzoomscroll').stop().animate({scrollLeft:newScrollLeft});
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
